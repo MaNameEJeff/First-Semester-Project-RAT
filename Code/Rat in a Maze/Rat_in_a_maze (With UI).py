@@ -55,12 +55,20 @@ from PIL import ImageTk
 global first_puzzle
 first_puzzle = True
 
+#Set the size of the box according to the screen resolution and the number of boxes
+def manage_box_size(height, width, N):
+    size = int(((height*width)/(100*N**2)))
+    if size > 50:
+        return manage_box_size(height, width, 1.5*N)
+    return size
+
 def main():  # Program execution begins from here.
     """Tkinter Window Initialisation"""
     global first_puzzle
 
     master = Tk()
     master.title("Rat in a Maze")
+    #master.attributes('-fullscreen', True)
 
     #Get the resolution of working moniter
     height = master.winfo_screenheight()
@@ -162,7 +170,7 @@ def main():  # Program execution begins from here.
         break
 
     """Maze UI"""
-    squaresize = int((((height*width)) / (N**4)) + N)  # Dynamically changes with the maze size
+    squaresize = manage_box_size(height, width, N)  # Dynamically changes with the maze size
     tile_color = " "
     rectbox_coordinates = [0, 0, squaresize, squaresize]
     forbidden = []  # To store co-ordinates of obstacle boxes in maze grid
@@ -230,7 +238,7 @@ def main():  # Program execution begins from here.
 
     def nextstep():  # When Next button is clicked
         Next = Tk()
-        Next.geometry("1500x300")
+        Next.geometry(resolution)
         Next.title("Solving the Maze")
         Next.configure(bg="#ffffff", border=1)
         message = Label(Next, text=f"Wanna solve another maze?", font=(

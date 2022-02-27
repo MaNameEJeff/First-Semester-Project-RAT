@@ -53,14 +53,13 @@ from PIL import ImageTk
 #windll.shcore.SetProcessDpiAwareness(1)
 
 global first_puzzle
-first_puzzle = True
+first_puzzle = False
 
 #Set the size of the box according to the screen resolution and the number of boxes
 def manage_box_size(height, width, N):
-    size = int(((height*width)/(100*N**2)))
-    if size > 50:
-        return manage_box_size(height, width, 1.5*N)
-    return size
+    maze_size = (height*width)/(5)
+    squaresize = (maze_size/(N**2))**0.5
+    return squaresize
 
 def main():  # Program execution begins from here.
     """Tkinter Window Initialisation"""
@@ -158,7 +157,7 @@ def main():  # Program execution begins from here.
                 if BACKTRACKING_ALGORITHM(maze, x, y + 1, sol) == True:
                     return True
 
-                sol[x][y] = 0
+                sol[x][y] = 2
                 return False
 
         def check(maze, x, y):
@@ -208,9 +207,11 @@ def main():  # Program execution begins from here.
         rectbox_coordinates[3] += squaresize
 
     # Rat Object to Traverse through the maze
-    rat = question_canvas.create_oval(0, 0, squaresize, squaresize, fill="green", width=0)
+    rat = question_canvas.create_oval((squaresize/8), (squaresize/8), (squaresize - 1), (squaresize - 1), fill="green", width=0)
 
-    endpoint = question_canvas.create_rectangle(squaresize*(N-1), squaresize*(N-1), squaresize*N, squaresize * N, fill="#660033")
+    print(f"N={N}")
+    print(f"squaresize={squaresize}")
+    endpoint = question_canvas.create_rectangle(squaresize*(N-1.025), squaresize*(N-1.025), squaresize*N, squaresize*N, fill="#660033")
 
     use = Label(maze_UI, text="Use", font=(r"HK Grotesk", 20), fg="#000000", bg="#ffffff")
     use.place(anchor='e', x=((height+width)/2 - (width/7)), y=(540/1080)*height) 
@@ -345,9 +346,9 @@ def main():  # Program execution begins from here.
             for j in i:
                 if j == 5:
                     color = "green"
-                elif j == 1:
+                elif (j == 1) or (j == 2):
                     color = "white"
-                else:
+                elif j == 0:
                     color = "black"
                 square = solution_canvas.create_rectangle(
                     rectbox_coordinates[0], rectbox_coordinates[1], rectbox_coordinates[2], rectbox_coordinates[3], fill=color, width=0)
@@ -383,3 +384,4 @@ def main():  # Program execution begins from here.
 
 if __name__ == "__main__":
     main()
+    #print(manage_box_size(1440, 900, 5))
